@@ -2,6 +2,21 @@
 //  SPLASH SPLASH — game.js
 //  Game init, world loading, main loop, leaderboard
 // ================================================================
+const CV = document.querySelector('canvas');
+const ctx = CV.getContext('2d');
+let W = CV.width = window.innerWidth;
+let H = CV.height = window.innerHeight;
+
+// Canvas resize handler (prevents distortion on mobile/resize)
+window.addEventListener('resize', () => {
+  W = CV.width = window.innerWidth;
+  H = CV.height = window.innerHeight;
+});
+
+// Mobile/touch perf: Prevent zoom/scroll
+document.addEventListener('touchstart', e => { e.preventDefault(); }, { passive: false });
+document.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturestart', e => { e.preventDefault(); });
 // ── LEADERBOARD ──
 function getScores(){try{return JSON.parse(localStorage.getItem('ss4')||'[]');}catch{return[];}}
 function saveScore(s){const sc=getScores();sc.push({score:s,world:currentWorld,date:new Date().toLocaleDateString()});sc.sort((a,b)=>b.score-a.score);localStorage.setItem('ss4',JSON.stringify(sc.slice(0,10)));}
