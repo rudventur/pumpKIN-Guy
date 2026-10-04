@@ -7,22 +7,18 @@ const ctx = CV.getContext('2d');
 let W = CV.width = window.innerWidth;
 let H = CV.height = window.innerHeight;
 
-// Canvas resize handler (prevents distortion on mobile/resize)
 window.addEventListener('resize', () => {
   W = CV.width = window.innerWidth;
   H = CV.height = window.innerHeight;
 });
 
-// Mobile/touch perf: Prevent zoom/scroll
 document.addEventListener('touchstart', e => { e.preventDefault(); }, { passive: false });
 document.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
 document.addEventListener('gesturestart', e => { e.preventDefault(); });
-// ── LEADERBOARD ──
 function getScores(){try{return JSON.parse(localStorage.getItem('ss4')||'[]');}catch{return[];}}
 function saveScore(s){const sc=getScores();sc.push({score:s,world:currentWorld,date:new Date().toLocaleDateString()});sc.sort((a,b)=>b.score-a.score);localStorage.setItem('ss4',JSON.stringify(sc.slice(0,10)));}
 function showLB(){const sc=getScores();alert('🏆 TOP SCORES:\n\n'+(sc.length?sc.map((s,i)=>`${i+1}. ${s.score} pts – ${s.world} (${s.date})`).join('\n'):'No scores yet! Play first 🎃'));}
 
-// ── GAME INIT ──
 function initWorld(wid){
   currentWorld=wid;
   platforms=[];collectibles=[];gunPickups=[];enemies=[];friendlies=[];
@@ -42,16 +38,14 @@ function initWorld(wid){
     invincible:60,waveCd:0,abilityCd:0,ohmActive:0,ohmTimer:0,flying:false,flyTimer:30,dead:false};
   platforms.push({x:80,y:H*0.62,w:360,h:22,type:'solid',pulse:0,claimed:false});
   genPlats(0);spawnColls(0);spawnGuns(0);
-  // AI world setup
   document.getElementById('aiHud').style.display=WORLDS[wid].defend?'':'none';
   if(WORLDS[wid].defend)spawnBoss('aiCore');
   else if(WORLDS[wid].bossId)setTimeout(()=>spawnBoss(WORLDS[wid].bossId),2500);
-  // World title flash
   const wt=document.getElementById('wTitle');
   wt.textContent=WORLDS[wid].name;wt.style.color=WORLDS[wid].glow;wt.style.opacity='1';
   setTimeout(()=>wt.style.opacity='0',2500);
   SFX.worldChange();updateGunHUD();
-  initQuests(wid);// ⚡ start Ohm missions!
+  initQuests(wid);
 }
 
 function startGame(wid){
@@ -80,7 +74,6 @@ window.addEventListener('keydown',e=>{
 });
 CV.addEventListener('touchstart',()=>{if(gameOver){initWorld(currentWorld);gameOver=false;}},{passive:true});
 
-// ── MAIN LOOP ──
 function loop(){
   ctx.clearRect(0,0,W,H);
   if(gameRunning||gameOver){
@@ -99,3 +92,17 @@ function loop(){
   requestAnimationFrame(loop);
 }
 loop();
+
+function launchChem(){window.open('https://rudventur.github.io/ChemVentur/','_blank');}
+(function(){
+  var icon=document.querySelector('link[rel="apple-touch-icon"]');
+  if(icon) icon.href='https://rudventur.github.io/RudVentur.com/embed/apple-touch-icon.png';
+  if(!document.querySelector('script[src="rxplanation.js"]')){
+    var s=document.createElement('script'); s.src='rxplanation.js'; document.head.appendChild(s);
+  }
+  if(!document.getElementById('rxplanation-style')){
+    var style=document.createElement('style'); style.id='rxplanation-style';
+    style.textContent='#rxplanation{position:fixed;z-index:500;display:none;width:280px;background:#041208;color:#d8ffe4;border:2px solid #00ff41;border-radius:8px;padding:10px 12px}#rxplanation .rx-title{font-weight:800;color:#00ff41;margin-bottom:6px}button,.bb{position:relative;z-index:3;visibility:visible;opacity:1;pointer-events:auto}';
+    document.head.appendChild(style);
+  }
+})();
