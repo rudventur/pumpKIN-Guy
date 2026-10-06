@@ -570,7 +570,7 @@ function initQuests(worldId){
   activeQuests=defs.map(q=>({...q,done:false}));
   questStats={enemiesDefeated:0,collsGrabbed:0,score:0,jumpCount:0,
     deathsThisRun:0,bossesKilled:0,waterShotsFired:0,timeAlive:0,aiWaves:0,aiCoreHp:100};
-  document.getElementById('questPanel').style.display='';
+  document.getElementById('questPanel').style.display='block';
   renderQuestPanel();
 }
 
