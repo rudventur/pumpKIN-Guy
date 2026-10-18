@@ -82,6 +82,8 @@ canvas{display:block;}
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity 0.5s;}
 #solarMap.show{opacity:1;pointer-events:all;}
+/* the invisible ✕ CLOSE sat over the head picker in play and ate its taps */
+#solarMap:not(.show) button{pointer-events:none;}
 #smCanvas{display:block;}
 
 /* HUD */
@@ -170,7 +172,6 @@ canvas{display:block;}
   opacity:0;transition:opacity 0.3s;pointer-events:none;}
 #pickPop.show{opacity:1;}
 
-/* AI HUD */
 /* ── QUEST / FIX-IT PANEL ── */
 #questPanel{position:fixed;top:50%;right:14px;transform:translateY(-50%);
   background:rgba(0,0,0,0.92);border:2px solid #ffff00;border-radius:14px;
@@ -202,8 +203,31 @@ canvas{display:block;}
 @keyframes ohmrise{0%{opacity:1;transform:translateY(0) scale(1)}
   80%{opacity:1;transform:translateY(-60px) scale(1.1)}
   100%{opacity:0;transform:translateY(-90px) scale(0.9)}}
+/* AI HUD (its selector had gone missing, so it sat unstyled under the game) */
+#aiHud{position:fixed;top:56px;left:12px;background:rgba(0,0,0,0.82);
   border:2px solid #ff4444;border-radius:10px;padding:6px 12px;
   z-index:10;display:none;font-size:0.68rem;color:#ff4444;line-height:1.9;}
+/* ── PANEL TOGGLES (panel-toggle.js) ── */
+:root{--sf-panel-font:'Courier New',monospace;--sf-panel-title-font:'Courier New',monospace;
+  --sf-panel-font-size:0.62rem;--sf-panel-radius:10px;--sf-panel-ink:#000;}
+#hud{--sf-panel-accent:#00ff41;--sf-panel-text:#00ff41;}
+#questPanel{--sf-panel-accent:#ffff00;--sf-panel-text:#ffff00;}
+#headPicker{--sf-panel-accent:#9b30ff;--sf-panel-text:#a78bfa;}
+.sf-ptoggle{font-weight:bold;letter-spacing:1px;padding:1px 7px;}
+#hud .sf-ptoggle{margin-left:2px;}
+#questPanel .qt .sf-ptitle{font-size:inherit;letter-spacing:inherit;color:inherit;font-weight:bold;}
+#questPanel.sf-panel-collapsed .qt{margin-bottom:0;}
+#questPanel .qt .sf-ptitle{white-space:normal;}
+/* the :@] and :@D heads are text, which was black on black */
+#headPicker .hopt{color:#e879f9;}
+#headPicker .sf-ptoggle{margin-left:4px;}
+/* HUD hidden: the score pill shrinks to its toggle, the other top readouts go */
+body.sf-hidden-hud #hud > span{display:none;}
+body.sf-hidden-hud #hud{padding:3px 8px;}
+body.sf-hidden-hud #prog,body.sf-hidden-hud #gunHud,
+body.sf-hidden-hud #abilityBar,body.sf-hidden-hud #aiHud{display:none !important;}
+/* Head picker hidden: only "HEAD:" and its toggle stay */
+body.sf-hidden-heads #headPicker .hopt{display:none;}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#000000">
@@ -298,6 +322,7 @@ canvas{display:block;}
   <span id="hLv">💚×3</span><span class="hd">|</span>
   <span id="hHp">❤❤❤</span><span class="hd">|</span>
   <span id="hWr">🌿</span>
+  <button class="sf-ptoggle" type="button" data-panel-toggle="hud"><span class="sf-pt-icon"></span><span class="sf-pt-label" data-closed="HUD"></span></button>
 </div>
 <div id="prog" style="display:none;">
   TO SHIP 🛸<br/><span id="progTxt">0 / 500</span>
@@ -327,6 +352,7 @@ canvas{display:block;}
   <div class="hopt" data-e=":@]" onclick="ph(this)">:@]</div>
   <div class="hopt" data-e=":@D" onclick="ph(this)">:@D</div>
   <div class="hopt" data-e="😈" onclick="ph(this)">😈</div>
+  <button class="sf-ptoggle" type="button" data-panel-toggle="heads"><span class="sf-pt-icon"></span><span class="sf-pt-label" data-closed="heads"></span></button>
 </div>
 <div id="mob" style="display:none;">
   <div class="dpad">
@@ -351,10 +377,12 @@ canvas{display:block;}
 <div id="pickPop"></div>
 <div id="wTitle"></div>
 <div id="questPanel">
-  <div class="qt">⚡ OHM MISSIONS</div>
+  <div class="qt sf-phead"><span class="sf-ptitle">⚡ OHM MISSIONS</span><button class="sf-ptoggle" type="button" data-panel-toggle="quests"><span class="sf-pt-icon"></span><span class="sf-pt-label" data-closed="show"></span></button></div>
+  <div class="sf-pbody">
   <div id="questList"></div>
   <div class="qprog"><span id="qDone">0</span>/<span id="qTotal">0</span> FIXED
     <div class="qbar"><div class="qfill" id="qFill" style="width:0%"></div></div>
+  </div>
   </div>
 </div>
 <div id="questFlash"></div>
@@ -365,5 +393,7 @@ canvas{display:block;}
 <script src="engine.js"></script>
 <script src="draw.js"></script>
 <script src="game.js"></script>
+<script src="panel-toggle.js"></script>
+<script src="panels.js"></script>
 </body>
 </html>

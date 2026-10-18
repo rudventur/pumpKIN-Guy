@@ -38,7 +38,7 @@ function initWorld(wid){
     invincible:60,waveCd:0,abilityCd:0,ohmActive:0,ohmTimer:0,flying:false,flyTimer:30,dead:false};
   platforms.push({x:80,y:H*0.62,w:360,h:22,type:'solid',pulse:0,claimed:false});
   genPlats(0);spawnColls(0);spawnGuns(0);
-  document.getElementById('aiHud').style.display=WORLDS[wid].defend?'':'none';
+  document.getElementById('aiHud').style.display=WORLDS[wid].defend?'block':'none';
   if(WORLDS[wid].defend)spawnBoss('aiCore');
   else if(WORLDS[wid].bossId)setTimeout(()=>spawnBoss(WORLDS[wid].bossId),2500);
   const wt=document.getElementById('wTitle');
