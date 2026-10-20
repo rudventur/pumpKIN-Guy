@@ -227,11 +227,11 @@ function smSelectAt(mx,my){
   const i=smHitTest(mx,my);
   if(i<0)return;
   const p=PLANETS[i];
-  if(!isPlanetUnlocked(p)){SFX.hit();return;}
+  // every planet on the map has a world; one without a world (or not unlocked yet) cannot be picked
+  if(!p.worldId||!WORLDS[p.worldId]||!isPlanetUnlocked(p)){SFX.hit();return;}
   closeSolarMap();
   document.getElementById('tallyScreen').classList.add('hidden');
-  if(p.worldId)startWarpTo(p);
-  else alert(`🚀 ${p.name} — Coming Soon!`);
+  startWarpTo(p);
 }
 
 function renderSolarLoop(){
